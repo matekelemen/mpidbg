@@ -8,6 +8,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "muuri": "^0.9.5",
     "vue": "^3.2.45",
     "xterm": "^5.1.0"
   },
