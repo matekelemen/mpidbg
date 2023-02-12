@@ -9,7 +9,7 @@ const mainPort = 6060;
 
 function getShell()
 {
-    return os.platform() === "win32" ? "powershell.exe" : "zsh";
+    return "zsh";
 }
 
 
