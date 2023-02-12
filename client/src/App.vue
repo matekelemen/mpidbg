@@ -1,10 +1,10 @@
 <script>
     // --- Internal Imports ---
-    import EmbeddedTerminal from "./components/EmbeddedTerminal.vue";
+    import DecoratedTerminal from "./components/DecoratedTerminal.vue";
 
     export default {
         components: {
-            EmbeddedTerminal
+            DecoratedTerminal
         }, // components
 
         data() {
@@ -20,5 +20,5 @@
 
 
 <template>
-    <EmbeddedTerminal/>
+    <DecoratedTerminal/>
 </template>
