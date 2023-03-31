@@ -4,7 +4,7 @@ var WebSocket = require("ws");
 const { env } = require("process");
 
 
-const mainPort = 6060;
+const mainPort = 9001;
 
 
 function getShell()
@@ -27,7 +27,20 @@ function getNewWebSocketServer(parameters)
         });
 
         socket.on("message", message => {
-            ptyProcess.write(message);
+            let response = JSON.parse(message);
+            switch (response.type) {
+                case "input": {
+                    ptyProcess.write(response.data);
+                    break;
+                }
+                case "resize" : {
+                    ptyProcess.resize(response.data[0], response.data[1]);
+                    break;
+                }
+                default: {
+                    console.log(`Invalid respose: ${response}`);
+                }
+            } // switch response.type
         }); // socket.onMessage
 
         socket.on("close", () => {
@@ -43,7 +56,7 @@ function getNewWebSocketServer(parameters)
         }); // pty.onData
 
         ptyProcess.onExit(exitMessage => {
-            console.log("Terminal exited with code " + exitMessage.exitCode);
+            console.log(`Terminal exited with code ${exitMessage.exitCode}`);
             socket.close();
         }); // pty.onExit
     }); // server.onConnection

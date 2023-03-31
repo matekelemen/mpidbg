@@ -1,34 +1,45 @@
 <script>
     // --- Internal Imports ---
-    import EmbeddedTerminal from "./EmbeddedTerminal.vue"
-
+    import EmbeddedTerminal from "./EmbeddedTerminal.vue";
+    import TerminalHeader from "./TerminalHeader.vue";
 
     export default {
         components: {
-            EmbeddedTerminal
+            EmbeddedTerminal,
+            TerminalHeader
         }, // components
 
         props: {
-            embeddedTerminalParameters: {
-                default: {},
-                type: Object
+            title: {
+                default: "Terminal",
+                type: String
             },
-            parameters: {
+            embeddedTerminal: {
                 default: {},
                 type: Object
-            } // props.parameters
-        } // props
+            } // embeddedTerminal
+        }, // props
+
+        data() {
+            return {
+
+            }
+        } // data
     }; // export default
 </script>
 
 
 <template>
-    <div ref="decorator">
-        <EmbeddedTerminal :terminalParameters="embeddedTerminalParameters"/>
+    <div class="decorated-terminal">
+        <terminal-header :title="title"/>
+        <embedded-terminal :terminal-parameters="embeddedTerminal"/>
     </div>
 </template>
 
 
 
-<style>
+<style scoped>
+    .decorated-terminal {
+        box-sizing: border-box;
+    }
 </style>

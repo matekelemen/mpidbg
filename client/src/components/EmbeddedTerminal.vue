@@ -1,20 +1,26 @@
 <script>
     // --- Internal Imports ---
     import {Terminal} from "xterm/lib/xterm";
+    import {FitAddon} from "xterm-addon-fit/lib/xterm-addon-fit"
+    import theme from "../terminalTheme.json";
 
-
-    const mainPort = 6060;
+    let defaultProps = {
+        port: 9001,
+        terminalParameters: {
+            cursorBlink: false,
+            theme: theme
+        } // terminalParameters
+    };
 
 
     export function getNewPort(mainSocket)
     {
-        return mainPort;
+        return defaultProps.port;
     }
 
 
-    export function getNewSocket(port)
+    export function makeSocket(port)
     {
-        console.log("getNewSocket called with port ", port);
         return new WebSocket(`ws://localhost:${port}`);
     }
 
@@ -22,7 +28,10 @@
     export function attachTerminalToSocket(terminal, socket)
     {
         socket.onopen = () => {
-            socket.send("");
+            socket.send(JSON.stringify({
+                type: "resize",
+                data: [terminal.rows, terminal.cols]
+            }));
         }; // socket.onopen
 
         socket.onmessage = (event) => {
@@ -34,7 +43,10 @@
         }; // socket.onclose
 
         terminal.onData(data => {
-            socket.send(data);
+            socket.send(JSON.stringify({
+                type: "input",
+                data: data
+            }));
         }); // terminal.onData
     }
 
@@ -48,21 +60,23 @@
     }
 
 
-    export function getNewTerminal(element,
-                                   properties)
+    export function makeTerminal(element, parameters)
     {
-        let terminal = new Terminal(properties);
+        let terminal = new Terminal(parameters);
+        let fitAddon = new FitAddon();
+        terminal.loadAddon(fitAddon);
         terminal.open(element);
+        fitAddon.fit();
         return terminal;
     }
 
 
-    export function spawnNewTerminal(element_id,
+    export function spawnNewTerminal(elementID,
                                      port,
-                                     terminal_properties)
+                                     terminalParameters)
     {
-        const socket = getNewSocket(port);
-        let terminal = getNewTerminal(element_id, terminal_properties);
+        const socket = makeSocket(port);
+        let terminal = makeTerminal(elementID, terminalParameters);
         attachTerminalToSocket(terminal, socket);
         return terminal;
     }
@@ -77,23 +91,21 @@
 
         props: {
             terminalParameters: {
-                default: {
-                    cursorBlink: false
-                }, // default
+                default: defaultProps.terminalParameters,
                 type: Object
             }, // terminalParameters
-            socket: {
-                default: undefined,
-                type: WebSocket
-            } // socket
+            port: {
+                default: defaultProps.port,
+                type: Number
+            } // port
         }, // props
 
         mounted() {
-            // Open a new socket if none was passed
-            let s = this.socket === undefined ? getNewSocket(getNewPort(null)) : this.socket;
-            this.terminal = getNewTerminal(this.$refs.terminal,
-                                           this.terminalParameters);
-            attachTerminalToSocket(this.terminal, s);
+            let socket = this.socket === undefined ? makeSocket(getNewPort(null)) : this.socket;
+            let parameters = {...defaultProps, ...this.terminalParameters};
+            this.terminal = makeTerminal(this.$refs.terminal,
+                                         parameters.terminalParameters);
+            attachTerminalToSocket(this.terminal, socket);
         } // mounted()
     }; // export default
 </script>
@@ -101,10 +113,20 @@
 
 
 <template>
-    <div ref="terminal"></div>
+    <div class="terminal" ref="terminal"></div>
 </template>
 
 
 
-<style>
+<style scoped>
+    .terminal {
+        position: relative;
+        box-sizing: border-box;
+        width: 100%;
+        height: 100%;
+        margin: 0 auto;
+        padding: 0;
+        bottom: 0;
+        left: 0;
+    }
 </style>
