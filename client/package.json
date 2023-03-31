@@ -10,7 +10,8 @@
   "dependencies": {
     "muuri": "^0.9.5",
     "vue": "^3.2.45",
-    "xterm": "^5.1.0"
+    "xterm": "^5.1.0",
+    "xterm-addon-fit": "^0.7.0"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^4.0.0",
