@@ -34,7 +34,7 @@ function getNewWebSocketServer(parameters)
                     break;
                 }
                 case "resize" : {
-                    ptyProcess.resize(response.data[0], response.data[1]);
+                    ptyProcess.resize(response.data[1], response.data[0]);
                     break;
                 }
                 default: {

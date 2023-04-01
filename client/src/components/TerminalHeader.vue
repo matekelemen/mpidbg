@@ -12,9 +12,7 @@
             return {}
         }, // data
 
-        mounted() {
-            console.log(`TerminalHeader: ${JSON.stringify(this.parameters, 0, 2)}`);
-        }
+        mounted() {}
     }; // export default
 </script>
 

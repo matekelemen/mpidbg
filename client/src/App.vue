@@ -1,6 +1,9 @@
 <script>
     // --- Internal Imports ---
     import Grid from "./components/Grid.vue";
+    import network from "./network.json";
+    import {promiseSocket} from "./socketUtilities";
+
 
     export default {
         components: {
@@ -9,15 +12,24 @@
 
         data() {
             return {
+                connections: new Map(),
                 terminals: []
             };
         }, // data()
 
         mounted() {
-            for (const i_rank of Array(3).keys()) {
-                this.terminals.push({
-                    headerParameters: {title: `Rank ${i_rank}`},
-                    terminalParameters: {port: 9002}
+            for (const i_rank of Array(1).keys()) {
+                promiseSocket(network.address, network.port).then(socket => {
+                    this.connections.set(i_rank, socket);
+                    this.terminals.push({
+                        headerParameters: {title: `Rank ${i_rank}`},
+                        terminalParameters: {
+                            socket: socket,
+                            rankID: i_rank
+                        } // terminalParameters
+                    });
+                }).catch(exception => {
+                    console.log(`Failed to create socket for rank ${i_rank}: ${exception}`);
                 });
             }
         } // mounted()

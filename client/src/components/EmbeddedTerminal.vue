@@ -3,39 +3,29 @@
     import {Terminal} from "xterm/lib/xterm";
     import {FitAddon} from "xterm-addon-fit/lib/xterm-addon-fit"
     import theme from "../terminalTheme.json";
+    import network from "../network.json";
+    import {promiseSocket} from "../socketUtilities";
 
 
     let defaults = {
         parameters: {
-            port: 9001,
+            socket: undefined,
+            rankID: 0,
             terminalParameters: {
                 cursorBlink: false,
+                fontFamily: "noto mono",
                 theme: theme
             }
         }
     };
 
 
-    export function getNewPort(mainSocket)
-    {
-        return defaults.parameters.port;
-    }
-
-
-    export function makeSocket(port)
-    {
-        return new WebSocket(`ws://localhost:${port}`);
-    }
-
-
     export function attachTerminalToSocket(terminal, socket)
     {
-        socket.onopen = () => {
-            socket.send(JSON.stringify({
-                type: "resize",
-                data: [terminal.rows, terminal.cols]
-            }));
-        }; // socket.onopen
+        socket.send(JSON.stringify({
+            type: "resize",
+            data: [terminal.rows, terminal.cols]
+        }));
 
         socket.onmessage = (event) => {
             terminal.write(event.data);
@@ -95,14 +85,38 @@
             } // return object
         }, // data()
 
+        watch: {
+            parameters (newObject, oldObject) {
+                console.log(newObject, oldObject);
+            }
+        }, // watch
+
         mounted() {
             let parameters = {...defaults.parameters, ...this.parameters};
-            console.log(`EmbeddedTerminal: ${JSON.stringify(parameters, 0, 2)}`)
-            this.socket = makeSocket(getNewPort(null));
+            this.socket = parameters.socket;
             this.terminal = makeTerminal(this.$refs.terminal,
                                          parameters.terminalParameters);
             attachTerminalToSocket(this.terminal, this.socket);
-        } // mounted()
+        }, // mounted()
+
+        beforeUpdate() {
+            if (!!this.socket) {
+                detachTerminalFromSocket(this.terminal, this.socket);
+            }
+        },
+
+        updated() {
+            if (!!this.socket) {
+                attachTerminalToSocket(this.terminal, this.socket);
+            } else {
+                promiseSocket(network.address, network.port).then(socket => {
+                    this.socket = socket
+                    attachTerminalToSocket(this.terminal, this.socket);
+                }).catch(exception => {
+                    console.log(`Rank ${this.rankID} to create a socket`);
+                });
+            }
+        }
     }; // export default
 </script>
 
@@ -124,5 +138,6 @@
         padding: 0;
         bottom: 0;
         left: 0;
+        overflow: hidden;
     }
 </style>

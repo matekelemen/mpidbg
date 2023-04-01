@@ -22,12 +22,13 @@
 
         data() {
             return {
-                ranks: []
+                ranks: [],
+                grid: null
             }
         }, // data
 
         updated() {
-            var interactiveGrid = new Muuri(
+            this.grid = new Muuri(
                 ".grid",
                 {
                     dragEnabled: true,
@@ -39,7 +40,16 @@
                     layoutDuration: 100
                 }
             );
-        }
+        }, // mounted
+
+        //beforeUpdate() {
+        //},
+
+        //updated() {
+        //    this.grid.add(
+        //        this.$refs._0
+        //    );
+        //}
     }; // export default
 </script>
 
@@ -47,7 +57,7 @@
 
 <template>
     <div class="grid">
-        <span class="grid-item" v-for="terminal in terminals" :key="terminal.rankID">
+        <span class="grid-item" v-for="terminal in terminals" :key="terminal.rankID" :ref="terminal.rankID">
             <div class="grid-item-content">
                 <decorated-terminal :parameters="terminal"/>
             </div>

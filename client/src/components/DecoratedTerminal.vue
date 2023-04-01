@@ -22,9 +22,7 @@
             return {}
         }, // data
 
-        mounted() {
-            console.log(`DecoratedTerminal: ${JSON.stringify(this.parameters, 0, 2)}`)
-        }
+        mounted() {}
     }; // export default
 </script>
 
