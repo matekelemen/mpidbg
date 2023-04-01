@@ -18,7 +18,7 @@
         }, // data()
 
         mounted() {
-            for (const i_rank of Array(1).keys()) {
+            for (const i_rank of Array(2).keys()) {
                 promiseSocket(network.address, network.port).then(socket => {
                     this.connections.set(i_rank, socket);
                     this.terminals.push({

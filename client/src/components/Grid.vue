@@ -22,12 +22,12 @@
 
         data() {
             return {
-                ranks: [],
-                grid: null
+                grid: null,
+                activeRanks: []
             }
         }, // data
 
-        updated() {
+        mounted() {
             this.grid = new Muuri(
                 ".grid",
                 {
@@ -42,14 +42,27 @@
             );
         }, // mounted
 
-        //beforeUpdate() {
-        //},
+        updated() {
+            // Find which ranks have been removed and which added
+            let ranks = this.terminals.map(terminal => terminal.terminalParameters.rankID);
+            let newRanks = ranks.filter(rank => !this.activeRanks.includes(rank));
+            let deletedRanks = this.activeRanks.filter(rank => !ranks.includes(rank));
 
-        //updated() {
-        //    this.grid.add(
-        //        this.$refs._0
-        //    );
-        //}
+            // Remove deleted ranks
+            for (const rank of deletedRanks) {
+                this.grid.remove(
+                    this.$refs.terminals[this.terminals.map(terminal => terminal.terminalParameters.rankID).indexOf(rank)]
+                );
+            }
+
+            // Add new ranks
+            for (const rank of newRanks) {
+                this.grid.add(
+                    this.$refs.terminals[this.terminals.map(terminal => terminal.terminalParameters.rankID).indexOf(rank)]
+                );
+            }
+            this.activeRanks = ranks;
+        }
     }; // export default
 </script>
 
@@ -57,7 +70,7 @@
 
 <template>
     <div class="grid">
-        <span class="grid-item" v-for="terminal in terminals" :key="terminal.rankID" :ref="terminal.rankID">
+        <span class="grid-item" v-for="terminal in terminals" :key="terminal.rankID" ref="terminals">
             <div class="grid-item-content">
                 <decorated-terminal :parameters="terminal"/>
             </div>
