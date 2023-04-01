@@ -4,18 +4,21 @@
     import {FitAddon} from "xterm-addon-fit/lib/xterm-addon-fit"
     import theme from "../terminalTheme.json";
 
-    let defaultProps = {
-        port: 9001,
-        terminalParameters: {
-            cursorBlink: false,
-            theme: theme
-        } // terminalParameters
+
+    let defaults = {
+        parameters: {
+            port: 9001,
+            terminalParameters: {
+                cursorBlink: false,
+                theme: theme
+            }
+        }
     };
 
 
     export function getNewPort(mainSocket)
     {
-        return defaultProps.port;
+        return defaults.parameters.port;
     }
 
 
@@ -83,29 +86,22 @@
 
 
     export default {
+        props: defaults,
+
         data() {
             return {
+                socket: null,
                 terminal: null
             } // return object
         }, // data()
 
-        props: {
-            terminalParameters: {
-                default: defaultProps.terminalParameters,
-                type: Object
-            }, // terminalParameters
-            port: {
-                default: defaultProps.port,
-                type: Number
-            } // port
-        }, // props
-
         mounted() {
-            let socket = this.socket === undefined ? makeSocket(getNewPort(null)) : this.socket;
-            let parameters = {...defaultProps, ...this.terminalParameters};
+            let parameters = {...defaults.parameters, ...this.parameters};
+            console.log(`EmbeddedTerminal: ${JSON.stringify(parameters, 0, 2)}`)
+            this.socket = makeSocket(getNewPort(null));
             this.terminal = makeTerminal(this.$refs.terminal,
                                          parameters.terminalParameters);
-            attachTerminalToSocket(this.terminal, socket);
+            attachTerminalToSocket(this.terminal, this.socket);
         } // mounted()
     }; // export default
 </script>

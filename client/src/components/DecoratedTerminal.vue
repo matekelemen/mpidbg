@@ -3,36 +3,36 @@
     import EmbeddedTerminal from "./EmbeddedTerminal.vue";
     import TerminalHeader from "./TerminalHeader.vue";
 
+    let defaults = {
+        parameters: {
+            headerParameters: {},
+            embeddedTerminal: {}
+        }
+    }; // defaults
+
     export default {
+        props: defaults,
+
         components: {
             EmbeddedTerminal,
             TerminalHeader
         }, // components
 
-        props: {
-            title: {
-                default: "Terminal",
-                type: String
-            },
-            embeddedTerminal: {
-                default: {},
-                type: Object
-            } // embeddedTerminal
-        }, // props
-
         data() {
-            return {
+            return {}
+        }, // data
 
-            }
-        } // data
+        mounted() {
+            console.log(`DecoratedTerminal: ${JSON.stringify(this.parameters, 0, 2)}`)
+        }
     }; // export default
 </script>
 
 
 <template>
     <div class="decorated-terminal">
-        <terminal-header :title="title"/>
-        <embedded-terminal :terminal-parameters="embeddedTerminal"/>
+        <terminal-header :parameters="parameters.headerParameters"/>
+        <embedded-terminal :parameters="parameters.terminalParameters"/>
     </div>
 </template>
 

@@ -1,21 +1,26 @@
 <script>
+    let defaults = {
+        parameters: {
+            title: "Terminal"
+        }
+    }; // defaults
+
     export default {
-        props: {
-            title: {
-                default: "Terminal",
-                type: String
-            }
-        }, // props
+        props: defaults,
 
         data() {
             return {}
-        } // data
+        }, // data
+
+        mounted() {
+            console.log(`TerminalHeader: ${JSON.stringify(this.parameters, 0, 2)}`);
+        }
     }; // export default
 </script>
 
 
 <template>
-    <div class="terminal-header">{{ title }}</div>
+    <div class="terminal-header">{{ parameters.title }}</div>
 </template>
 
 

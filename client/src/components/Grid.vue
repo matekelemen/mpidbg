@@ -49,7 +49,7 @@
     <div class="grid">
         <span class="grid-item" v-for="terminal in terminals" :key="terminal.rankID">
             <div class="grid-item-content">
-                <decorated-terminal :title="terminal.title"/>
+                <decorated-terminal :parameters="terminal"/>
             </div>
         </span>
     </div>

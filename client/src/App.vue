@@ -16,8 +16,8 @@
         mounted() {
             for (const i_rank of Array(3).keys()) {
                 this.terminals.push({
-                    title: `Rank ${i_rank}`,
-                    rankID: i_rank
+                    headerParameters: {title: `Rank ${i_rank}`},
+                    terminalParameters: {port: 9002}
                 });
             }
         } // mounted()
