@@ -13,7 +13,7 @@
             rankID: 0,
             terminalParameters: {
                 cursorBlink: false,
-                fontFamily: "noto mono",
+                fontFamily: "MesloLGS NF Regular, Noto Mono",
                 theme: theme
             }
         }
@@ -129,15 +129,5 @@
 
 
 <style scoped>
-    .terminal {
-        position: relative;
-        box-sizing: border-box;
-        width: 100%;
-        height: 100%;
-        margin: 0 auto;
-        padding: 0;
-        bottom: 0;
-        left: 0;
-        overflow: hidden;
-    }
+
 </style>

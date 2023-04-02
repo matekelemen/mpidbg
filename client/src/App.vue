@@ -1,19 +1,22 @@
 <script>
     // --- Internal Imports ---
     import Grid from "./components/Grid.vue";
+    import Dock from "./components/Dock.vue"
     import network from "./network.json";
     import {promiseSocket} from "./socketUtilities";
 
 
     export default {
         components: {
-            Grid
+            Grid,
+            Dock
         }, // components
 
         data() {
             return {
                 connections: new Map(),
-                terminals: []
+                terminals: [],
+                dockParameters: {ranks: []}
             };
         }, // data()
 
@@ -27,7 +30,10 @@
                             socket: socket,
                             rankID: i_rank
                         } // terminalParameters
-                    });
+                    }); // this.terminals.push
+                    this.dockParameters.ranks.push({
+                        rankID: i_rank
+                    }); // this.rankWidgets.push
                 }).catch(exception => {
                     console.log(`Failed to create socket for rank ${i_rank}: ${exception}`);
                 });
@@ -40,6 +46,7 @@
 
 <template>
     <div class="root-container">
+        <dock :parameters="dockParameters"/>
         <grid class="terminal-grid" :terminals="terminals"/>
     </div>
 </template>
@@ -60,6 +67,9 @@
 
     .terminal-grid {
         position: relative;
+        margin-left: 50px;
+        width: auto;
+        height: auto;
         overflow: scroll;
     }
 </style>
